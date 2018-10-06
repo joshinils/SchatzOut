@@ -11,7 +11,7 @@ public:
 
 	enum BitField
 	{
-		Invalid = -1,
+		InvalidPos = -1,
 		Unexplored = 0,
 		Empty = 1,
 		Neighboring = 2,
@@ -39,55 +39,97 @@ public:
 	int get(size_t z, size_t s) const
 	{
 		if (z >= squareSize || s >= squareSize)
-			return Invalid;
+			return InvalidPos;
 		return _brett[z][s];
 	}	// get value of position
 	
 	int get(std::pair<int, int> pos) const
 	{
 		if (pos.first >= squareSize || pos.second >= squareSize)
-			return Invalid;
+			return InvalidPos;
 		return _brett[pos.first][pos.second];
+	}
+
+	int revealCornerUpperLeft()
+	{
+		if (   (_schatzPosition.first == 0 && _schatzPosition.second == 1)
+			|| (_schatzPosition.first == 1 && _schatzPosition.second == 0) )
+		{
+			_brett[0][0] = Neighboring;
+			_brett[0][1] = PossibleTreasure;
+			_brett[1][0] = PossibleTreasure;
+			return Neighboring;
+		}
+		return _brett[0][0] = Empty;
+	}
+
+	int revealCornerUpperRight()
+	{
+		if (   (_schatzPosition.first == 0 && _schatzPosition.second == 5)
+			|| (_schatzPosition.first == 1 && _schatzPosition.second == 4))
+		{
+			_brett[0][5] = Neighboring;
+			_brett[0][5] = PossibleTreasure;
+			_brett[1][4] = PossibleTreasure;
+			return Neighboring;
+		}
+		return _brett[0][5] = Empty;
+	}
+
+	int revealCornerLowerLeft()
+	{
+		if (   (_schatzPosition.first == 4 && _schatzPosition.second == 0)
+			|| (_schatzPosition.first == 5 && _schatzPosition.second == 1) )
+		{
+			_brett[5][0] = Neighboring;
+			_brett[4][0] = PossibleTreasure;
+			_brett[5][1] = PossibleTreasure;
+			return Neighboring;
+		}
+		return _brett[5][0] = Empty;
+	}
+
+	int revealCornerLowerRight()
+	{
+		if (   (_schatzPosition.first == 5 && _schatzPosition.second == 4)
+			|| (_schatzPosition.first == 4 && _schatzPosition.second == 5) )
+		{
+			_brett[5][5] = Neighboring;
+			_brett[5][4] = PossibleTreasure;
+			_brett[4][5] = PossibleTreasure;
+			return Neighboring;
+		}
+		return _brett[5][5] = Empty;
 	}
 
 	// change board state by revealing one position
 	int reveal(std::pair<int, int> pos)
 	{
 		if (pos == _schatzPosition)
-			_brett[pos.first][pos.second] = Treasure;
+			return _brett[pos.first][pos.second] = Treasure;
 		if (pos.first >= squareSize || pos.second >= squareSize)
-			return -1;
+			return InvalidPos;
 		switch (pos.first)
 		{
 		case 0:
 			switch (pos.second)
 			{
-			case 0: // upper left corrner
-			{
-				// check neighbors
-				if (   (_schatzPosition.first == 0 && _schatzPosition.second == 1) 
-					|| (_schatzPosition.first == 1 && _schatzPosition.second == 0) )
-				{
-					_brett[0][0] = Neighboring;
-					_brett[0][1] = PossibleTreasure;
-					_brett[1][0] = PossibleTreasure;
-					return Neighboring;
-				}
-			}
-			break;
+			case 0:
+				return revealCornerUpperLeft();
+				break;
 			case 1:
 			case 2:
 			case 3:
 			case 4:
-				//todo
+				//upper middle
 				break;
 
 			case 5:
-				// todo
+				return revealCornerUpperRight();
 				break;
 
 			default:
-				return Invalid;
+				return InvalidPos;
 				break;
 			}
 			break;
@@ -99,22 +141,22 @@ public:
 			switch (pos.second)
 			{
 			case 0:
-				//todo
+				// left middle
 				break;
 
 			case 1:
 			case 2:
 			case 3:
 			case 4:
-				//todo
+				//middle middle
 				break;
 
 			case 5:
-				// todo
+				// middle right
 				break;
 
 			default:
-				return Invalid;
+				return InvalidPos;
 				break;
 			}
 			break;
@@ -123,28 +165,28 @@ public:
 			switch (pos.second)
 			{
 			case 0:
-				//todo
+				// bottom left corner
 				break;
 
 			case 1:
 			case 2:
 			case 3:
 			case 4:
-				//todo
+				//bottomm middle
 				break;
 
 			case 5:
-				// todo
+				// bottom right corner
 				break;
 
 			default:
-				return Invalid;
+				return InvalidPos;
 				break;
 			}
 			break;
 
 		default:
-			return Invalid;
+			return InvalidPos;
 			break;
 		}
 	}
