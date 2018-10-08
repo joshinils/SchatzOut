@@ -18,7 +18,7 @@ int main()
 	std::array<Brett, Brett::squareSize * Brett::squareSize > Bretter;
 	for (size_t i = 0; i < Bretter.size(); i++)
 	{
-
+		Bretter[i].reset(std::make_pair(i / Brett::squareSize, i % Brett::squareSize));
 	}
 
 	for (size_t i = 0; i < ANZ_WEGE; i++)
