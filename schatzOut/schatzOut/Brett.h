@@ -23,9 +23,9 @@ private:
 	std::array<std::array<int, squareSize>, squareSize> _brett;
 	std::pair<int, int> _schatzPosition;
 
-public:
-	Brett()
+	void init(const std::pair<int, int>& schatzPos)
 	{
+		_schatzPosition = schatzPos;
 		for (int zeile = 0; zeile < squareSize; zeile++)
 		{
 			for (int spalte = 0; spalte < squareSize; spalte++)
@@ -33,6 +33,21 @@ public:
 				_brett[zeile][spalte] = 0;
 			}
 		}
+	}
+
+public:
+
+	// willnot set a SchatzPos, not initialize the board with 0s
+	Brett() = default;
+
+	Brett(const std::pair<int, int>& schatzPos)
+	{
+		init(schatzPos);
+	}
+
+	void reset(const std::pair<int, int>& schatzPos)
+	{
+		init(schatzPos);
 	}
 
 	// get value of position
@@ -231,7 +246,7 @@ public:
 	// apply Weg, return tries
 	int applyWeg(const Weg& w)
 	{
-		int versuche = 0;
+		size_t versuche = 0;
 		for (versuche = 0; versuche < w.size(); ++versuche)
 		{
 			std::pair<int, int> position = w.at(versuche);
