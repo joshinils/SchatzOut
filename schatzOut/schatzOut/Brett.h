@@ -3,6 +3,7 @@
 
 #include "Weg.h"
 #include <array>
+#include <iostream>
 
 class Brett
 {
@@ -111,7 +112,7 @@ public:
 			_brett[squareSize-2][squareSize-1] = PossibleTreasure;
 			return _brett[squareSize-1][squareSize-1] = Neighboring;
 		}
-		return _brett[squareSize][squareSize] = Empty;
+		return _brett[squareSize-1][squareSize-1] = Empty;
 	}
 
 	int revealBorderTop(int spalte)
@@ -246,17 +247,32 @@ public:
 	// apply Weg, return tries
 	int applyWeg(const Weg& w)
 	{
+		std::cout << "applying weg, schatz is at:" << "(" << _schatzPosition.first << ", " << _schatzPosition.second << ")" << std::endl;
 		size_t versuche = 0;
 		for (versuche = 0; versuche < w.size(); ++versuche)
 		{
 			std::pair<int, int> position = w.at(versuche);
 			int feldWert = reveal(position);
+			std::cout << std::endl << *this ;
 			if (feldWert == InvalidPos)
 				return InvalidPos;
 			if (feldWert == Treasure)
 				return versuche;
 		}
 		return versuche;
+	}
+
+	friend std::ostream& operator << (std::ostream& ostr, const Brett& b)
+	{
+		for (size_t zeile = 0; zeile < b._brett.size(); zeile++)
+		{
+			for (size_t spalte = 0; spalte < b._brett[0].size(); spalte++)
+			{
+				ostr << b._brett[zeile][spalte] << " ";
+			}
+			ostr << std::endl;
+		}
+		return ostr;
 	}
 
 	~Brett() = default;
